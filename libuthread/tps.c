@@ -48,7 +48,8 @@ static int find_item(queue_t queue, void *data, void *arg)
 	}
 	//printf("Didn't find item \n");
     return 0;
-}
+} //queue_t function that finds by thread id
+
 static int find_item_by_address(queue_t queue, void *data, void *arg)
 {	
 	void* self = arg;
@@ -61,7 +62,8 @@ static int find_item_by_address(queue_t queue, void *data, void *arg)
 	}
 	//printf("Didn't find item \n");
     return 0;
-}
+} //queue_t function that finds by tps address
+
 struct tps * tps_malloc()
 {
 	struct tps * tps_space = (struct tps *) malloc(sizeof(struct tps));
@@ -94,7 +96,7 @@ static void segv_handler(int sig, siginfo_t *si, void *context)
     signal(SIGBUS, SIG_DFL);
     /* And transmit the signal again in order to cause the program to crash */
     raise(sig);
-}
+} //signal handler with extra functionality to test for TPS protection error
 
 int tps_init(int segv)
 {
@@ -114,7 +116,7 @@ int tps_init(int segv)
     }
 
 	return 0;
-}
+} //Init tps_queue and create sigaction for handler
 
 int tps_create(void)
 {
@@ -144,7 +146,7 @@ int tps_create(void)
 	exit_critical_section();
 	return 0;
 
-}
+} //Create a new tps for current thread
 
 int tps_destroy(void)
 {
@@ -175,7 +177,7 @@ int tps_destroy(void)
 		exit_critical_section();
 		return -1;
 	} //TPS not found cannot delete
-}
+} //Destroy current thread tps if there is one
 
 int tps_read(size_t offset, size_t length, char *buffer)
 {
@@ -204,7 +206,7 @@ int tps_read(size_t offset, size_t length, char *buffer)
 		return -1; 	
 	} // tps never found in the queue
 	
-}
+} //Read memory into buffer
 
 int tps_write(size_t offset, size_t length, char *buffer)
 {
@@ -252,7 +254,7 @@ int tps_write(size_t offset, size_t length, char *buffer)
 		return -1;
 	} // tps never found in the queue
 	
-}
+} //Write buffer into memory
 
 int tps_clone(pthread_t tid)
 {
@@ -285,5 +287,5 @@ int tps_clone(pthread_t tid)
 	//Given thread doesn't have a TPS so error
 	exit_critical_section();
 	return -1;
-}
+} //Clone the current thread with the given thread's tps
 
